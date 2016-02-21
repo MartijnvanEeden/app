@@ -6,4 +6,6 @@ class User < ActiveRecord::Base
 
   validates :name, presence: true,
   				   length: {in: 3..40}
+
+  has_many :meetings
 end

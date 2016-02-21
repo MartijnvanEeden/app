@@ -1,5 +1,7 @@
 class MeetingsController < ApplicationController
   before_action :set_meeting, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!, except: [:index, :show]
+  before_action :correct_user, only: [:edit, :update, :destroy]
 
   def index
     @meetings = Meeting.all
@@ -9,14 +11,14 @@ class MeetingsController < ApplicationController
   end
 
   def new
-    @meeting = Meeting.new
+    @meeting = current_user.meetings.build
   end
 
   def edit
   end
 
   def create
-    @meeting = Meeting.new(meeting_params)
+    @meeting = current_user.meetings.build(meeting_params)
       if @meeting.save
         redirect_to @meeting, notice: 'Meeting was successfully created.'
       else
@@ -38,6 +40,11 @@ class MeetingsController < ApplicationController
   end
 
   private
+    def correct_user
+      @meeting = current_user.meetings.find_by(id: params[:id])
+      redirect_to meetings_path, notice: "Not authorized" if @meeting.nil?
+    end
+
     def set_meeting
       @meeting = Meeting.find(params[:id])
     end
