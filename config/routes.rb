@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :meetings
   devise_for :users
   get 'home' => 'pages#home'
   get 'about' => "pages#about"
